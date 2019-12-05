@@ -20,13 +20,11 @@ end
    @user = User.find(params[:id])
 end
 def create
-@user = User.new(user_params)
-flash[:info] = @user.errors.messages
-
- if @user.save
-	
-flash[:info] = "User has been created successfully"
-redirect_to root_url	
+  @user = User.new(user_params)
+  if @user.save
+    UserMailer.account_activation(@user).deliver_now
+    flash[:info] = "Please check your email to activate your account."
+    redirect_to root_url
 else
 render 'new'
 end
